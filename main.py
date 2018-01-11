@@ -42,6 +42,8 @@ def type_of(o: object) -> str:
 
 
 def to_swagger_format(data: OrderedDict) -> OrderedDict:
+    if not data:
+        return
     new_data = OrderedDict()
     for k, v in data.items():
         t = type_of(v)
@@ -85,6 +87,8 @@ def as_array(v: list) -> OrderedDict:
 
 
 def output_as_yml(data: OrderedDict, prefix: str='', indent: str='  '):
+    if not data:
+        return
     for k, v in data.items():
         print('{}{}:'.format(prefix, k))
         if type(v) == OrderedDict:
