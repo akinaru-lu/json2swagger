@@ -1,3 +1,4 @@
+import argparse
 import json
 import re
 
@@ -83,11 +84,11 @@ def as_array(v: list) -> OrderedDict:
     })
 
 
-def output_as_yml(data: OrderedDict, prefix: str="", indent: str="  "):
+def output_as_yml(data: OrderedDict, prefix: str='', indent: str='  '):
     for k, v in data.items():
         print('{}{}:'.format(prefix, k))
         if type(v) == OrderedDict:
-            output_as_yml(v, prefix=prefix + indent)
+            output_as_yml(v, prefix=prefix+indent, indent=indent)
         elif type(v) == Array:
             pass
         else:
@@ -118,7 +119,15 @@ def formatted(v) -> str:
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--prefix', '-p', type=str, default='')
+    parser.add_argument('--indent', '-i', type=str, default='  ')
+
+    args = parser.parse_args()
+    prefix = args.prefix
+    indent = args.indent
+
     src = read()
     data = json.loads(src, object_pairs_hook=OrderedDict)
     data = to_swagger_format(data)
-    output_as_yml(data)
+    output_as_yml(data, prefix=prefix, indent=indent)
