@@ -133,6 +133,10 @@ def formatted(v) -> str:
             return "''"
         if str_is_num(v):  # if numeric
             return "'{}'".format(v)
+    elif t == Boolean:
+        if v:
+            return 'true'
+        return 'false'
     return repr(v).strip("'")
 
 
