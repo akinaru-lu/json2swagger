@@ -41,9 +41,11 @@ def type_of(o: object) -> str:
     return 'unknown type: ' + name
 
 
-def to_swagger_format(data: OrderedDict) -> OrderedDict:
+def to_swagger_format(data) -> OrderedDict:
     if not data:
         return
+    if type_of(data) == Array:
+        return as_array(data)
     new_data = OrderedDict()
     for k, v in data.items():
         t = type_of(v)
@@ -68,7 +70,9 @@ def as_default(v) -> OrderedDict:
     })
 
 
-def as_object(v: OrderedDict) -> OrderedDict:
+def as_object(v) -> OrderedDict:
+    if type_of(v) == Array:
+        return as_array(v)
     od = OrderedDict()
     od["type"] = type_of(v)
     child = to_swagger_format(v)
@@ -78,6 +82,8 @@ def as_object(v: OrderedDict) -> OrderedDict:
 
 
 def as_array(v: list) -> OrderedDict:
+    if type_of(v) == Object:
+        return as_object(v)
     od = OrderedDict()
     od["type"] = type_of(v)
     try:
