@@ -18,7 +18,7 @@ message:
 ### Output to stdout
 input:
 ```
-$ cat src.json | python3 main.py
+$ cat example.json | python3 main.py
 ```
 output:
 ```
@@ -91,16 +91,16 @@ last_cursor:
 ```
 ### Output to file
 ```
-cat src.json | python3 main.py > dst.yml
+cat example.json | python3 main.py > dst.yml
 ```
 ### Output to clipborad (example in MacOS)
 ```
-cat src.json | python3 main.py | pbcopy
+cat example.json | python3 main.py | pbcopy
 ```
 ### With prefix and indent
 input:
 ```
-cat src.json | python3 main.py -p '# ' -i '**'
+cat example.json | python3 main.py -p '# ' -i '**'
 ```
 output:
 ```
