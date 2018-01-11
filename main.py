@@ -69,21 +69,22 @@ def as_default(v) -> OrderedDict:
 
 
 def as_object(v: OrderedDict) -> OrderedDict:
-    return OrderedDict({
-        "type": type_of(v),
-        "properties": to_swagger_format(v),
-    })
+    od = OrderedDict()
+    od["type"] = type_of(v)
+    child = to_swagger_format(v)
+    if child:
+        od["properties"] = child
+    return od
 
 
 def as_array(v: list) -> OrderedDict:
+    od = OrderedDict()
+    od["type"] = type_of(v)
     try:
-        item = v[0]
+        od["items"] = as_object(v[0])
     except IndexError:
-        item = None
-    return OrderedDict({
-        "type": type_of(v),
-        "items": as_object(item),
-    })
+        return od
+    return od
 
 
 def output_as_yml(data: OrderedDict, prefix: str='', indent: str='  '):
