@@ -41,9 +41,16 @@ def type_of(o: object) -> str:
     return 'unknown type: ' + name
 
 
-def to_swagger_format(data) -> OrderedDict:
-    if not data:
-        return
+def as_swagger_json(data) -> OrderedDict:
+    t = type_of(data)
+    if t == Object:
+        return as_object(data)
+    elif t == Array:
+        return as_array(data)
+    raise ValueError('invalid json data')
+
+
+def _to_swagger_format(data) -> OrderedDict:
     if type_of(data) == Array:
         return as_array(data)
     new_data = OrderedDict()
@@ -59,7 +66,7 @@ def to_swagger_format(data) -> OrderedDict:
 
 
 def to_swagger_format_str(data: OrderedDict, indent: int=2) -> str:
-    swagger_json = to_swagger_format(data)
+    swagger_json = as_swagger_json(data)
     return json.dumps(swagger_json, indent=indent)
 
 
@@ -75,7 +82,7 @@ def as_object(v) -> OrderedDict:
         return as_array(v)
     od = OrderedDict()
     od["type"] = type_of(v)
-    child = to_swagger_format(v)
+    child = _to_swagger_format(v)
     if child:
         od["properties"] = child
     return od
@@ -129,16 +136,20 @@ def formatted(v) -> str:
     return repr(v).strip("'")
 
 
+def run(prefix: str='', indent: str='  '):
+    src = read()
+    if not src:
+        raise ValueError("empty input")
+
+    data = json.loads(src, object_pairs_hook=OrderedDict)
+    data = as_swagger_json(data)
+    output_as_yml(data, prefix=prefix, indent=indent)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--prefix', '-p', type=str, default='')
     parser.add_argument('--indent', '-i', type=str, default='  ')
 
     args = parser.parse_args()
-    prefix = args.prefix
-    indent = args.indent
-
-    src = read()
-    data = json.loads(src, object_pairs_hook=OrderedDict)
-    data = to_swagger_format(data)
-    output_as_yml(data, prefix=prefix, indent=indent)
+    run(prefix=args.prefix, indent=args.indent)
