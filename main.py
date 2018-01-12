@@ -71,6 +71,8 @@ def to_swagger_format_str(data: OrderedDict, indent: int=2) -> str:
 
 
 def as_default(v) -> OrderedDict:
+    if v is None:
+        return as_object(OrderedDict())
     return OrderedDict({
         "type": type_of(v),
         "example": v,

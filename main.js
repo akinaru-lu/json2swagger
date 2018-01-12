@@ -72,6 +72,9 @@ function wrapValue(v) {
 // called by fromObject
 function _fromObject(o) {
     var object = {};
+    if (o === null) { // regard null as a empty object
+        return object;
+    }
     Object.keys(o).forEach(k => {
         object[k] = wrapValue(o[k]);
     })
